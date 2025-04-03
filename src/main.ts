@@ -32,11 +32,22 @@ export const tmdbApi = process.env.TMDB_KEY && process.env.TMDB_KEY;
   const PORT = Number(process.env.PORT) || 3000;
 
   await fastify.register(FastifyCors, {
-    origin: '*',  
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,  
+    credentials: true,
   });
+  
+  // Adiciona os cabeçalhos CORS manualmente em todas as respostas
+  fastify.addHook('onSend', (request, reply, payload, done) => {
+    reply.header('Access-Control-Allow-Origin', '*');
+    reply.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    reply.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    reply.header('Access-Control-Allow-Credentials', 'true');
+    done(null, payload);
+  });
+  
+    
   
 
   if (process.env.NODE_ENV === 'DEMO') {
